@@ -1,29 +1,23 @@
 package reader;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public final class G4Reader {
 
-    private static BufferedReader reader;
+    private G4Reader() {
+    }
 
-    public static String readParser(String path) throws IllegalArgumentException {
+    public static String readParser(String path) {
         if (!path.endsWith(".g4")) {
             throw new IllegalArgumentException("path do not end by .g4. path " + path);
         }
-        var sb = new StringBuilder();
         try {
-            reader = new BufferedReader(new FileReader(path));
-            List<String> tempLines = new ArrayList<>();
-            reader.lines().forEach(tempLines::add);
-            tempLines.forEach(e -> sb.append(e).append("\n"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            return Files.readString(Path.of(path), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Cannot read grammar file: " + path, e);
         }
-
-       return sb.toString();
     }
 }
