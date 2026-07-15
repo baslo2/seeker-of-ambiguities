@@ -6,16 +6,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
+
+import parser.AlternativeParser;
 
 public class Rule {
 
     private String name;
     private String body;
     private List<Rule> parents = new ArrayList<>();
-    // TODO need way how find all alternatives way in rule
     private Map<String, List<Rule>> alternatives = new HashMap<>();
     private List<Rule> children = new ArrayList<>();
+    private List<String> alternativeBodies;
 
     public Rule(String name) {
         this.name = name;
@@ -27,10 +28,18 @@ public class Rule {
 
     public void setBody(String body){
         this.body = body;
+        this.alternativeBodies = null;
     }
 
     public String getBody() {
         return body;
+    }
+
+    public List<String> getAlternativeBodies() {
+        if (alternativeBodies == null) {
+            alternativeBodies = AlternativeParser.split(body);
+        }
+        return Collections.unmodifiableList(alternativeBodies);
     }
 
     public void addChild(Rule child) {
